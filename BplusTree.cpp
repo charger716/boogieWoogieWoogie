@@ -117,10 +117,27 @@ void BPlusTree::split(Node*& n, Node*& p) {
 }
 
 // Thomas and Zach find, remove
+// do we just want to find the value at the leaf or both the parent and the leaf (if it's a parent?)
+// is find really just a void or do we want to return a where the data is stored (if it is at all)
+
 void BPlusTree::find(int d) {
     if (!root){
+        cout << "No such value!" << endl;
         return;
     } else {
+        BPlusTree test;
+        // how to find the size of children (both x and y component)?
+        for(int i = 0; i < test.root->max; i++){ // go through x component of children (this is incorrect)
+            for(int j = 0; j < test.root->max; j++){    // go through y component of children (this is incorrect)
+                for(int k = 0; k < test.root->(max+2); k++){
+                    if(test.root->data[k] == d && !test.root->data[k]->isKey){  // how to check for if it is key
+                        cout << "Element is within the B+ tree" << endl;
+                        return;
+                    }
+                }
+            }
+        }
+
         //CODE
     }
 }
