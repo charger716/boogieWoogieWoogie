@@ -1,6 +1,7 @@
 #include "BplusTree.h"
 
 void BPlusTree::InsertionSort(int data[], int size, int d){
+    data[size++] = d;
     for (int i = 1; i < size; i++){
         int temp = data[i];
         int j;
@@ -25,8 +26,7 @@ BPlusTree::~BPlusTree() {
 void BPlusTree::insert(int d) {
     if (!root){
         root = new Node(m);
-        root->data[0] = d;
-        root->size++;
+        root->data[root->size++] = d;
     } else {
         Node* cur = root;
         Node* par = nullptr;
@@ -50,7 +50,7 @@ void BPlusTree::insert(int d) {
 
             this->InsertionSort(cur->data,cur->size, d);
             cur->size++;
-            
+
             if (cur->size == m){
                 split(cur,par);
             }
@@ -68,7 +68,7 @@ void BPlusTree::split(Node*& n, Node*& p) {
     int j = 0;
 
     // root case
-    if (p == nullptr) {
+    if (p == nullptr || p == n) {
         // create new parent node with middle value as key
         p = new Node(m);
         p->data[p->size++] = mid;
@@ -79,6 +79,7 @@ void BPlusTree::split(Node*& n, Node*& p) {
         // child.
         for(int i = 0; i < ndx; i++){
             p->children[j]->data[i] = n->data[i];
+            p->children[j]->size++;
         }
 
         // shift values of right child
@@ -87,6 +88,9 @@ void BPlusTree::split(Node*& n, Node*& p) {
         }
         n->size--;
 
+        // attach leaf nodes
+        p->children[j]->nextLeaf = n;
+
         // attach child
         p->children[j+1] = n;
 
@@ -94,17 +98,26 @@ void BPlusTree::split(Node*& n, Node*& p) {
         root = p;
 
     } else {
-        this->InsertionSort(n->data, n->size, mid);
-        // recursion call somewhere in here
 
-        for (int i = 0; i < ndx; i++) {
-            this->InsertionSort(n->children[j]->data, n->children[j]->size, p->data[i]);
-            n->children[j]->size++;
+        // insert into parent
+        if (p->size < m) {
+            this->InsertionSort(p->data, p->size, mid);
+            p->size++;
+            // split parent if full
+            if(p->size == m){
+                split(p,root);
+            }
+        }
+
+        // after recursion move pointers
+        for(int i = 0; i < p->size; i++){
 
         }
 
-        // move the pointers???
-        // shift values in current node
+        for (int i = 0; i < p->size; i++) {
+            this->InsertionSort(n->children[j]->data, n->children[j]->size, p->data[i]);
+            n->children[j]->size++;
+        }
 
         j++;
 
@@ -117,27 +130,10 @@ void BPlusTree::split(Node*& n, Node*& p) {
 }
 
 // Thomas and Zach find, remove
-// do we just want to find the value at the leaf or both the parent and the leaf (if it's a parent?)
-// is find really just a void or do we want to return a where the data is stored (if it is at all)
-
 void BPlusTree::find(int d) {
     if (!root){
-        cout << "No such value!" << endl;
         return;
     } else {
-        BPlusTree test;
-        // how to find the size of children (both x and y component)?
-        for(int i = 0; i < test.root->max; i++){ // go through x component of children (this is incorrect)
-            for(int j = 0; j < test.root->max; j++){    // go through y component of children (this is incorrect)
-                for(int k = 0; k < test.root->(max+2); k++){
-                    if(test.root->data[k] == d && !test.root->data[k]->isKey){  // how to check for if it is key
-                        cout << "Element is within the B+ tree" << endl;
-                        return;
-                    }
-                }
-            }
-        }
-
         //CODE
     }
 }

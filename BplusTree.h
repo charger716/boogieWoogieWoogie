@@ -18,6 +18,7 @@ using namespace std;
 struct Node{
     int *data, size, max;
     Node **children;
+    Node *nextLeaf;
     bool isKey;
 
     // Constructor
@@ -25,15 +26,16 @@ struct Node{
         max = m;
         size = 0;
         data = new int[max];
-        children = new Node*[max+1];
+        children = new Node*[max];
         isKey = false;
+        nextLeaf = nullptr;
     }
 
     // Destructor
     ~Node(){
         delete [] data;
-        for (int i = 0; i < max+1; i++){
-            delete [] children[i];
+        for (int i = 0; i < this->max; i++){
+            delete children[i];
         }
         delete children;
     }
