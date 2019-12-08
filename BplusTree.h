@@ -39,7 +39,6 @@ struct Node{
     }
 };
 
-class BAD_INDEX{};
 class BPlusTree {
 private:
 

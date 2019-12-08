@@ -47,20 +47,10 @@ void BPlusTree::insert(int d) {
 
         // insert value if space
         if (cur->size < m){
-//            bool shiftChild = false;
-//            if (d < cur->data[0]){
-//                shiftChild = true;
-//            }
 
             this->InsertionSort(cur->data,cur->size, d);
             cur->size++;
-
-//            // shift children over if what was inserted was smaller
-//            if (shiftChild) {
-//                cur->children[cur->size] = cur->children[cur->size - 1];
-//                cur->children[cur->size - 1] = nullptr;
-//            }
-
+            
             if (cur->size == m){
                 split(cur,par);
             }
@@ -123,20 +113,22 @@ void BPlusTree::split(Node*& n, Node*& p) {
         }
         p->size--;
 
-        temp->key[j] = p;
-        p = temp;
     }
 }
 
 // Thomas and Zach find, remove
 void BPlusTree::find(int d) {
     if (!root){
-        throw BAD_INDEX{};
+        return;
+    } else {
+        //CODE
     }
 }
 
 void BPlusTree::remove(int d) {
     if(!root){
-
+        return;
+    } else {
+        // CODE
     }
 }
