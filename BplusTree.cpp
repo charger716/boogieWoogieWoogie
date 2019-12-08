@@ -129,11 +129,52 @@ void BPlusTree::split(Node*& n, Node*& p) {
     }
 }
 
-// Thomas and Zach find, remove
+// Tomas and Zach find, remove
 void BPlusTree::find(int d) {
     if (!root){
+        cout << "No such value!" << endl;
         return;
     } else {
+        Node* cur = root;
+        Node* par = nullptr;
+        int size_of_child;
+        bool flag = false;
+
+        // index for child pointer
+        int j = 0;
+
+        // find possible leaf node
+        while (cur->isKey){
+            for (int i = 0; i < cur->size; i++){
+                if (d > cur->data[i]){
+                    j = i+1;
+                }
+            }
+            par = cur;
+            cur = cur->children[j];
+        }
+        size_of_child = par->size + 1;
+
+        // traverse through all the leaf nodes
+        for(int i = 0; i < size_of_child; i++){
+            cur = par->children[i];
+            for(int j = 0; j < cur->size; j++){
+                cout << cur->data[j] << " ";
+                if(cur->data[j] == d){
+                    flag = true;
+                }
+            }
+            cout << endl;
+            if(flag){
+                cout << "value found!" << endl;
+                break;
+            }
+        }
+
+        if(!flag){
+            cout << "value not found :^(" << endl;
+        }
+
         //CODE
     }
 }
