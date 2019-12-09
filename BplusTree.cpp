@@ -94,7 +94,7 @@ void BPlusTree::split(Node*& n, Node*& p) {
             n->children[1]->nextLeaf = p->children[ndx]->children[0];
             p->children[ndx]->children[0]->nextLeaf = p->children[ndx]->children[1];
             n->children[1]->size -=2;
-
+            root = p;
         } else {
             p->children[j] = new Node(m);
             // copy all values smaller than middle value to left
@@ -133,6 +133,7 @@ void BPlusTree::split(Node*& n, Node*& p) {
             // split parent if full
             if(p->size == m){
                 split(p,root);
+                return;
             }
         }
 
