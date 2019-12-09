@@ -188,7 +188,19 @@ void BPlusTree::remove(int d) {
     if (!root){
         cout << "No such value!" << endl;
         return;
-    } else {
+    } else if(!root->children[0] && !root->children[1]){
+        if(root->size == 1){
+            delete root;
+            root = nullptr;
+        }else{
+            for(int i = 0; i < root->size-1; i++){
+                if(root->data[i] == d){
+                    root->data[i] = root->data[i+1];
+                }
+            }
+            root->size--;
+        }
+    }else {
         Node* cur = root;
         Node* par = nullptr;
         int size_of_child;
