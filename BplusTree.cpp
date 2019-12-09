@@ -75,32 +75,40 @@ void BPlusTree::split(Node*& n, Node*& p) {
         p->isKey = true;
         p->children[j] = new Node(m);
 
-        // copy all values smaller than middle value to left
-        // child.
-        for(int i = 0; i < ndx; i++){
-            p->children[j]->data[i] = n->data[i];
-            p->children[j]->size++;
+        if (n->isKey){
+
+        } else {
+            // copy all values smaller than middle value to left
+            // child.
+            for (int i = 0; i < ndx; i++) {
+                p->children[j]->data[i] = n->data[i];
+                p->children[j]->size++;
+            }
+
+            // shift values of right child
+            for (int i = 0; i < n->size; i++) {
+                n->data[i] = n->data[i + 1];
+            }
+            n->size--;
+
+            // attach leaf nodes
+            p->children[j]->nextLeaf = n;
+
+            // attach child
+            p->children[j + 1] = n;
+
+            //update root
+            root = p;
         }
-
-        // shift values of right child
-        for(int i = 0; i < n->size; i++){
-            n->data[i] = n->data[i+1];
-        }
-        n->size--;
-
-        // attach leaf nodes
-        p->children[j]->nextLeaf = n;
-
-        // attach child
-        p->children[j+1] = n;
-
-        //update root
-        root = p;
-
     } else {
 
+        bool lT = false;
         // insert into parent
         if (p->size < m) {
+            if(mid < p->data[0])
+            {
+                lT = true;
+            }
             this->InsertionSort(p->data, p->size, mid);
             p->size++;
             // split parent if full
@@ -109,27 +117,44 @@ void BPlusTree::split(Node*& n, Node*& p) {
             }
         }
 
-        // after recursion move pointers
-        for(int i = 0; i < p->size; i++){
+        if(lT) {
+            // shift pointers
+            for (int i = m-1; i > 0; i--) {
+                p->children[i] = p->children[i-1];
+            }
+
+            p->children[0] = new Node(m);
+            p->children[0]->data[p->children[0]->size++] = p->children[1]->data[0];
+
+            for(int i = 0; i < n->size; i++) {
+                n->data[i] = n->data[i+1];
+                p->children[0]->nextLeaf = p->children[1];
+            }
+            n->size--;
+        } else{
+            int k = 0;
+            // find next available child
+            while(p->children[j]){
+                    k++;
+            }
+
+            p->children[k] = new Node(m);
+
+            // copy values over to next node
+            for (int i = ndx; i < n->size; i++ ) {
+                p->children[k]->data[p->children[k]->size++] = n->data[i];
+            }
+            n->size -= p->children[k]->size;
+
+            // attach leaf nodes
+            p->children[k-1]->nextLeaf = p->children[k];
 
         }
-
-        for (int i = 0; i < p->size; i++) {
-            this->InsertionSort(n->children[j]->data, n->children[j]->size, p->data[i]);
-            n->children[j]->size++;
-        }
-
-        j++;
-
-        for (int i = 0; i < p->size; i++) {
-            p->data[i] = p->data[i + 1];
-        }
-        p->size--;
 
     }
 }
 
-// Tomas and Zach find, remove
+// Thomas and Zach find, remove
 void BPlusTree::find(int d) {
     if (!root){
         cout << "No such value!" << endl;
