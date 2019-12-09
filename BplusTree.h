@@ -1,11 +1,12 @@
 /*
- * Authors: Joseph Perez, Nicholas Prater
+ * Authors: Joseph Perez, Nicholas Prater, Jojo Cordova,
+ *          Zach Coon, Thomas Colorado
  * Assignment Title: Group Project
  * Assignment Description: This is the header file for the B+ Tree
  *                          visualization
  * Date Created: 12/1/19
  * Due Date: 12/9/19
- * Date Last Modified: 12/1/19
+ * Date Last Modified: 12/8/19
  */
 
 #ifndef BPLUSTREE_H
@@ -27,17 +28,23 @@ struct Node{
         size = 0;
         data = new int[max];
         children = new Node*[max];
+
+        // assign all children to null
+        for(int i = 0; i < max; i++){
+            children[i] = nullptr;
+        }
+
         isKey = false;
         nextLeaf = nullptr;
     }
 
     // Destructor
     ~Node(){
-        delete [] data;
-        for (int i = 0; i < this->max; i++){
+        for (int i = 0; i < size; i++){
             delete children[i];
         }
         delete children;
+        delete [] data;
     }
 };
 
