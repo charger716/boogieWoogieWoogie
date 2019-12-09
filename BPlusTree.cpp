@@ -213,7 +213,7 @@ void BPlusTree::remove(int d) {
         // traverse through all the leaf nodes
         for(int i = 0; i < size_of_child; i++){
             cur = par->children[i];
-            for(int j = 0; j < cur->size; j++){
+            for(j = 0; j < cur->size; j++){
                 cout << cur->data[j] << " ";
                 if(cur->data[j] == d){
                     
