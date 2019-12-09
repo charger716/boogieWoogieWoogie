@@ -73,11 +73,30 @@ void BPlusTree::split(Node*& n, Node*& p) {
         p = new Node(m);
         p->data[p->size++] = mid;
         p->isKey = true;
-        p->children[j] = new Node(m);
 
         if (n->isKey){
+            // right child created
+            p->children[0] = n;
+            p->children[ndx] = new Node(m);
+            // right child's first value is now the last key value
+            p->children[ndx]->data[0] = n->data[n->size];
+            // right child's right child is now n-> right most child
+            p->children[ndx]->children[ndx] = n->children[m-1];
+            n->children[m-1] = nullptr;
+            // decrement current key nodes size
+            n->size -= 2;
+            // right child's left child created
+            p->children[ndx]->children[0] = new Node(m);
+            // right child's left child copies
+            p->children[ndx]->children[0]->data[0] = n->children[1]->data[1];
+            p->children[ndx]->children[0]->data[1] = n->children[1]->data[2];
+            p->children[ndx]->children[0]->size += 2;
+            n->children[1]->nextLeaf = p->children[ndx]->children[0];
+            p->children[ndx]->children[0]->nextLeaf = p->children[ndx]->children[1];
+            n->children[1]->size -=2;
 
         } else {
+            p->children[j] = new Node(m);
             // copy all values smaller than middle value to left
             // child.
             for (int i = 0; i < ndx; i++) {
